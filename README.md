@@ -2,9 +2,11 @@
 
 The website for Al Dalal Henna & Beauty, Al Maireed, Ras Al Khaimah.
 
-Next.js 15, TypeScript, Postgres, deployed on Vercel. English and Arabic. Every price from the
-printed menu is on the site as real text, and there is an admin panel at `/admin` for changing
-prices, photos, opening hours, gift cards, reviews and questions without touching the code.
+Next.js 15, TypeScript, Postgres, deployed on Vercel. English and Arabic. Every service from the
+printed menu is on the site as real text, with no prices: they move with hair length, thickness and
+what the client picks, so the salon quotes on WhatsApp and again in the chair. There is an admin
+panel at `/admin` for changing services, photos, opening hours, gift cards, reviews and questions
+without touching the code.
 
 ---
 
@@ -32,7 +34,7 @@ git push -u origin main
 
 At vercel.com, **Add New → Project**, pick the repository, press **Deploy**. Nothing needs
 configuring. The first build will succeed and the site will work straight away, running on the
-prices built into the code.
+services built into the code.
 
 ### 3. Add the database
 
@@ -68,9 +70,10 @@ Open this in a browser, replacing the secret with your `SETUP_SECRET`:
 https://YOUR-SITE.vercel.app/api/setup?secret=YOUR_SETUP_SECRET
 ```
 
-It creates the tables, loads all 74 services with their prices in both languages, the six service
-pages, the gift cards, the four Google reviews, the 23 questions and the photographs, and creates
-the two admin logins.
+It creates the tables, loads all 74 services in both languages, the six service pages, the gift
+cards, the four Google reviews, the 24 questions and the photographs, and creates the two admin
+logins. The price columns are seeded too, because they stay in the database, but nothing on the
+site renders them.
 
 Running it twice is safe. It only fills tables that are empty, so it can never overwrite something
 you edited in the admin panel.
@@ -104,7 +107,7 @@ cp .env.example .env.local     # then fill in the values
 npm run dev                     # http://localhost:3000
 ```
 
-The site runs without a database. It falls back to the prices held in `src/db/content.ts`, so the
+The site runs without a database. It falls back to the services held in `src/db/content.ts`, so the
 pages are never empty. The admin panel will tell you the database is not connected.
 
 ---
@@ -115,7 +118,7 @@ pages are never empty. The admin panel will tell you the database is not connect
 
 | Tab | What it changes |
 |---|---|
-| **Prices** | All 74 services. Name, group heading, price range, unit, note, in both languages. |
+| **Services** | All 74 services. Name, group heading, note, in both languages. No price fields, because the site shows no prices. |
 | **Service pages** | The heading, opening paragraph and two pictures on each of the six service pages. |
 | **Photos** | Upload, describe, reorder, hide. Choose which part of the site each one appears on. |
 | **Contact** | Both numbers, email, address, map link, Instagram, TikTok, the menu PDF, and the notice bar. |
@@ -126,9 +129,14 @@ pages are never empty. The admin panel will tell you the database is not connect
 
 Two things worth knowing.
 
-**One change lands everywhere.** Editing a price on the Prices tab changes it on the service page,
-the menu page, the "from AED" line on the home page, and the structured data Google reads. There is
-one copy of every number.
+**One change lands everywhere.** Renaming a service on the Services tab changes it on the service
+page, the menu page, the line under the tile on the home page, and the structured data Google
+reads. There is one copy of every name.
+
+**The prices are still in the database.** The `price_from` and `price_to` columns and the admin
+form's price fields have been separated: the columns and their 74 numbers are untouched, the fields
+are gone, and nothing renders a figure. Switching prices back on later is a form change, not a
+migration.
 
 **Ramadan.** Change the times on the Hours tab, then write a line on the Contact tab notice bar and
 switch it on. That puts a message across the top of every page. Turn both back afterwards.
@@ -161,17 +169,21 @@ This will bring more customers than the website will, especially in the first ye
   Eyelash service and Make-up artist.
 - Address and phone identical to the website, in the same format.
 - Put the website address in the Website field.
-- Add the services with their prices. Google shows them directly in the profile.
+- Add the services. Google shows them directly in the profile. Prices there are optional, and
+  leaving them off matches the site.
 - Attributes: ladies only, languages spoken, walk-ins welcome, parking.
 - 20 photographs at launch, then three or four a month.
 - Reply to every review. Reply speed counts, and future customers read the replies.
 
 ### What the site already does
 
-- `BeautySalon` structured data listing all 74 services with AED prices, so Google can answer
-  "how much is a pedicure in Ras Al Khaimah" with your figures.
+- `BeautySalon` structured data listing all 74 services as an offer catalogue, so Google can answer
+  "who does knotless braids in Ras Al Khaimah" with your service names. The offers carry no price,
+  and `priceRange` is the `$$` band rather than a figure.
 - `Service`, `FAQPage` and `BreadcrumbList` markup on the service pages.
-- Every price as crawlable HTML text, not trapped in a PDF or an image.
+- Every service name as crawlable HTML text, not trapped in a PDF or an image. With the figures
+  gone, the names and the place carry the search traffic on their own, which is why they read the
+  way the salon says them.
 - `hreflang` tying each English page to its Arabic twin, so the two rank separately rather than
   competing.
 - Sitemap with both languages, generated from the database.
@@ -199,14 +211,14 @@ src/
     api/upload            photo uploads to Vercel Blob
     sitemap.ts robots.ts manifest.ts
     globals.css           the whole design system
-  components/             header, hero, footer, price lists, galleries
+  components/             header, hero, footer, service lists, galleries
   db/
     schema.ts             the nine tables
     content.ts            the printed menu as data, used to seed and as fallback
   lib/
     content.ts            loading, with the fallback
     i18n.ts               both dictionaries
-    format.ts             prices, WhatsApp links, opening hours
+    format.ts             WhatsApp links, phone numbers, opening hours
     schema-org.tsx        the structured data
     auth.ts               admin sessions
   actions/admin.ts        every admin save
@@ -217,10 +229,11 @@ src/
 every photograph is the salon's own, taken from the five backlit gold mirrors on the styling wall.
 Interface elements have square corners, so every curve on the site comes from the building. Type is
 Marcellus, which matches the Roman capitals on the shopfront sign, with Instrument Sans for body
-text and tabular figures so the price columns line up.
+text and tabular figures so opening hours and phone numbers line up.
 
-**Motion.** One thing carries it: hovering a price row draws the gold dot leader across, the same
-leader that runs across the paper menu. Beyond that there is a slow crossfade on the hero and a
+**Motion.** One thing carries it: hovering a service draws the gold dot leader across it, the same
+leader that runs across the paper menu. The service list is a grid of one, two or three columns,
+and every item is a WhatsApp link that opens with the service name already written. Beyond that there is a slow crossfade on the hero and a
 single fade as sections come into view. All of it stops for anyone whose device asks for reduced
 motion.
 
@@ -239,7 +252,9 @@ to a client. A public website that Google indexes is different, because stock ag
 image searches and send invoices. Replace them with your own work when you can. The interiors and
 the white ombre nails are the strongest pictures in the set anyway.
 
-**The menu PDF is not uploaded.** Until it is, the menu page lists every price as text, which is
-better for Google in any case. Add the PDF on the Contact tab and a download button appears.
+**The menu PDF is not uploaded.** Until it is, the menu page lists every service as text, which is
+better for Google in any case. Add the PDF on the Contact tab and a download button appears. The
+PDF is public, so it must not have prices in it either, or the download contradicts the rest of the
+site.
 
 **Lashes has no photographs yet.** That slot shows a drawn arch until one is added.

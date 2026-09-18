@@ -2,7 +2,7 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 
 const TABS = [
-  { href: '/admin', label: 'Prices' },
+  { href: '/admin', label: 'Services' },
   { href: '/admin/categories', label: 'Service pages' },
   { href: '/admin/photos', label: 'Photos' },
   { href: '/admin/contact', label: 'Contact' },

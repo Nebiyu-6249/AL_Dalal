@@ -1,11 +1,11 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { getContent, priceFloor, grouped } from '@/lib/content';
+import { getContent, leadServices, grouped } from '@/lib/content';
 import { type Lang, isLang, dict, href, pick } from '@/lib/i18n';
-import { whatsappLink, waMessage, price } from '@/lib/format';
+import { whatsappLink, waMessage } from '@/lib/format';
 import { breadcrumbLd, JsonLd } from '@/lib/schema-org';
 import Reveal from '@/components/Reveal';
-import { CategoryTiles, PriceList, Heading } from '@/components/blocks';
+import { CategoryTiles, ServiceList, Heading } from '@/components/blocks';
 import Link from 'next/link';
 
 export const revalidate = 3600;
@@ -15,12 +15,12 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { lang: raw } = await params;
   const lang = (isLang(raw) ? raw : 'en') as Lang;
-  const title = lang === 'ar' ? 'الخدمات والأسعار' : 'Services and prices';
+  const title = lang === 'ar' ? 'الخدمات' : 'Services';
   return {
     title,
     description: lang === 'ar'
-      ? 'قائمة كاملة بخدمات صالون الدلال وأسعارها بالدرهم: حناء، ضفائر، شعر، أظافر، بشرة، رموش ومكياج.'
-      : 'The full list of services at Al Dalal in Ras Al Khaimah with AED prices: henna, braiding, hair, nails, skin, lashes and makeup.',
+      ? 'كل ما نقدمه في صالون الدلال برأس الخيمة: حناء، ضفائر وإكستنشن، شعر، أظافر، بشرة، رموش ومكياج. اسألي عن السعر عبر واتساب.'
+      : 'Everything Al Dalal does in Ras Al Khaimah: henna, braiding and extensions, hair, nails, skin, lashes and makeup. Ask on WhatsApp for a price.',
     alternates: { canonical: href(lang, '/services'), languages: { en: '/services', ar: '/ar/services' } },
   };
 }
@@ -35,7 +35,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ lang:
 
   const tiles = content.categories.map((c) => ({
     slug: c.slug, name: P(c)('name'), tagline: P(c)('tagline'),
-    image: c.tileImage, from: priceFloor(content, c.slug),
+    image: c.tileImage, services: leadServices(content, c.slug, lang),
   }));
 
   return (
@@ -43,7 +43,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ lang:
       <section className="section section--tight">
         <div className="wrap">
           <hr className="rule" />
-          <h1>{lang === 'ar' ? 'الخدمات والأسعار' : 'Services and prices'}</h1>
+          <h1>{lang === 'ar' ? 'الخدمات' : 'Services'}</h1>
           <p className="lede" style={{ marginTop: '1rem' }}>{d.menuNote}</p>
         </div>
       </section>
@@ -56,17 +56,17 @@ export default async function ServicesPage({ params }: { params: Promise<{ lang:
 
       {content.categories.map((c, i) => (
         <section key={c.slug} className={i % 2 === 0 ? 'section band-cream' : 'section'}>
-          <div className="wrap" style={{ maxWidth: '52rem' }}>
+          <div className="wrap">
             <Reveal>
               <Heading title={P(c)('name')}>
                 <p>{P(c)('tagline')}</p>
               </Heading>
-              <PriceList
+              <ServiceList
                 lang={lang}
                 groups={grouped(content, c.slug)}
                 waFor={(s) => whatsappLink(
                   content.settings,
-                  waMessage.service(lang, pick(s as unknown as Record<string, unknown>, 'name', lang), price(s, lang)),
+                  waMessage.enquiry(lang, pick(s as unknown as Record<string, unknown>, 'name', lang)),
                 )}
               />
               <p style={{ marginTop: '1.75rem' }}>

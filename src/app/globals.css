@@ -89,11 +89,14 @@ img { max-width: 100%; height: auto; display: block; }
 }
 .on-dark :focus-visible { outline-color: var(--gold); }
 
+/* Parked above the viewport rather than off to one side. A physical -9999px
+   left is off-canvas in English but drags a 10,000px scroll area behind every
+   Arabic page, because the inline axis runs the other way. */
 .skip {
-  position: absolute; left: -9999px; top: 0; z-index: 100;
+  position: absolute; inset-inline-start: 0; top: -100vh; z-index: 100;
   background: var(--espresso); color: var(--on-dark); padding: 0.85rem 1.25rem;
 }
-.skip:focus { left: 0; }
+.skip:focus { top: 0; }
 
 .sr {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
@@ -164,33 +167,50 @@ img { max-width: 100%; height: auto; display: block; }
 .frame { position: relative; overflow: hidden; background: var(--cream); }
 .frame img { width: 100%; height: 100%; object-fit: cover; }
 
-/* --------------------------------------------------------------- price rows */
+/* ------------------------------------------------------------ service grid */
 
-.prices { margin: 0; padding: 0; list-style: none; }
-.price-group + .price-group { margin-top: 2.6rem; }
-.price-group__name {
+.svc-group + .svc-group { margin-top: 2.6rem; }
+.svc-group__name {
   font-family: var(--font-display); font-size: 1.22rem; color: var(--gold-deep);
   margin: 0 0 0.35rem;
 }
-.price-group__rule { height: 1px; background: var(--gold); opacity: 0.65; margin-bottom: 0.5rem; }
+.svc-group__rule { height: 1px; background: var(--gold); opacity: 0.65; margin-bottom: 0.25rem; }
 
-.price {
-  display: grid; grid-template-columns: 1fr auto; align-items: baseline;
-  gap: 0.5rem; padding: 0.72rem 0; border-bottom: var(--line);
-  position: relative;
+/* One column on a phone, two from 620px, three from 980px. The group heading
+   above each grid runs the full width, the way a heading does on the paper
+   menu. */
+.svcs { margin: 0; padding: 0; list-style: none; display: grid; }
+@media (min-width: 620px) {
+  .svcs { grid-template-columns: repeat(2, 1fr); column-gap: clamp(1.5rem, 3vw, 2.75rem); }
 }
-.price__name { font-size: 1.0125rem; }
-.price__note { display: block; font-size: 0.875rem; color: var(--taupe); margin-top: 0.15rem; }
-.price__amount {
-  font-variant-numeric: tabular-nums; font-size: 1.0125rem; font-weight: 500;
-  color: var(--gold-deep); white-space: nowrap;
+@media (min-width: 980px) { .svcs { grid-template-columns: repeat(3, 1fr); } }
+
+/* The item fills its row, so a service carrying a note does not drop the
+   hairline out of step with the ones beside it. */
+.svc { display: grid; }
+.svc__link {
+  display: grid; grid-template-columns: 1fr auto; align-items: baseline;
+  align-content: start; column-gap: 0.75rem;
+  padding: 0.72rem 0; border-bottom: var(--line);
+  position: relative; color: inherit; text-decoration: none;
+}
+.svc__name {
+  grid-area: 1 / 1; font-size: 1.0125rem;
   transition: color var(--fast) var(--ease);
 }
+.svc__note {
+  grid-area: 2 / 1 / 3 / 3; font-size: 0.875rem; color: var(--taupe);
+  margin-top: 0.15rem;
+}
+.svc__ask {
+  grid-area: 1 / 2; font-size: 0.8rem; color: var(--gold-deep); white-space: nowrap;
+  opacity: 0; transition: opacity var(--fast) var(--ease);
+}
 
-/* The dot leader from the printed menu. It draws across on hover, which is
-   the one piece of motion the whole site is built around. */
-.price__leader {
-  position: absolute; inset-block-end: 0.95rem; inset-inline-start: 0;
+/* The dot leader from the printed menu. It draws across the item on hover,
+   which is the one piece of motion the whole site is built around. */
+.svc__leader {
+  position: absolute; inset-block-end: -1px; inset-inline-start: 0;
   height: 1px; width: 100%;
   background-image: radial-gradient(circle, var(--gold) 1px, transparent 1.4px);
   background-size: 6px 1px; background-repeat: repeat-x;
@@ -198,11 +218,15 @@ img { max-width: 100%; height: auto; display: block; }
   transition: transform 260ms var(--ease);
   opacity: 0.9; pointer-events: none;
 }
-[dir='rtl'] .price__leader { transform-origin: right center; }
-.price:hover .price__leader, .price:focus-within .price__leader { transform: scaleX(1); }
-.price:hover .price__amount { color: var(--brown); }
+[dir='rtl'] .svc__leader { transform-origin: right center; }
+.svc__link:hover .svc__leader, .svc__link:focus-visible .svc__leader { transform: scaleX(1); }
+.svc__link:hover .svc__name, .svc__link:focus-visible .svc__name { color: var(--gold-deep); }
+.svc__link:hover .svc__ask, .svc__link:focus-visible .svc__ask { opacity: 1; }
 
-.price-note {
+/* No hover on a phone, so the word stands there the whole time. */
+@media (hover: none) { .svc__ask { opacity: 1; } }
+
+.menu-note {
   margin-top: 2rem; font-size: 0.92rem; color: var(--taupe);
   border-top: var(--line); padding-top: 1.1rem; max-width: 56ch;
 }
@@ -326,13 +350,18 @@ img { max-width: 100%; height: auto; display: block; }
 .cats { display: grid; gap: clamp(1.25rem, 2.5vw, 2rem); grid-template-columns: repeat(2, 1fr); }
 @media (min-width: 720px) { .cats { grid-template-columns: repeat(3, 1fr); } }
 
-.cat { text-decoration: none; color: inherit; display: block; }
+/* min-width lets the grid column shrink below the service line, which is what
+   puts the ellipsis on it instead of widening the tile. */
+.cat { text-decoration: none; color: inherit; display: block; min-width: 0; }
 .cat__media { aspect-ratio: 4 / 5; margin-bottom: 0.95rem; }
 .cat__media img { transition: transform var(--slow) var(--ease); }
 .cat:hover .cat__media img { transform: scale(1.035); }
 .cat__name { font-family: var(--font-display); font-size: clamp(1.15rem, 1rem + 0.6vw, 1.45rem); }
 .cat__line { font-size: 0.875rem; color: var(--taupe); margin-top: 0.15rem; }
-.cat__from { font-size: 0.845rem; color: var(--gold-deep); margin-top: 0.5rem; font-variant-numeric: tabular-nums; }
+.cat__services {
+  font-size: 0.845rem; color: var(--taupe); margin-top: 0.5rem;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
 
 /* --------------------------------------------------------------- two column */
 

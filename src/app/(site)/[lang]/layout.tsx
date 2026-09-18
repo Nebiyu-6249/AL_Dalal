@@ -29,8 +29,8 @@ export async function generateMetadata(
     ? 'صالون الدلال للحناء والتجميل | المعيريض، رأس الخيمة'
     : 'Al Dalal Henna & Beauty | Al Maireed, Ras Al Khaimah';
   const description = lang === 'ar'
-    ? 'صالون سيدات في المعيريض برأس الخيمة. حناء وضفائر وإكستنشن وعلاجات شعر وأظافر وفيشل ورموش. الأسعار كاملة على الموقع، والحجز عبر واتساب.'
-    : 'A ladies salon in Al Maireed, Ras Al Khaimah. Henna, braiding and extensions, hair treatments, nails, facials, waxing and lashes. Every price is listed. Book on WhatsApp.';
+    ? 'صالون سيدات في المعيريض برأس الخيمة. حناء وضفائر وإكستنشن وعلاجات شعر وأظافر وفيشل ورموش. راسلينا على واتساب للحجز وللسعر.'
+    : 'A ladies salon in Al Maireed, Ras Al Khaimah. Henna, braiding and extensions, hair treatments, nails, facials, waxing and lashes. Message us on WhatsApp to book and for a price.';
 
   return {
     ...(base ? { metadataBase: new URL(base) } : {}),

@@ -38,7 +38,7 @@ export default async function TermsPage({ params }: { params: Promise<{ lang: st
               <p>{d.salon}، {settings.addressAr}. واتساب واتصال على الرقم المذكور في صفحة التواصل.</p>
               <h2>الأسعار</h2>
               <p>
-                الأسعار المنشورة بالدرهم الإماراتي وتشمل ما هو مذكور فقط. النطاقات السعرية تعتمد على طول الشعر أو كثافته أو حالته، ونؤكد لك السعر النهائي في الصالون قبل بدء الخدمة. قد تتغير الأسعار، والسعر المعتمد هو ما نؤكده لك في الصالون.
+                لا توجد أسعار منشورة على هذا الموقع. نحدد السعر بالدرهم الإماراتي حسب طول الشعر وكثافته وحالته وما تختارينه، ونخبرك به عبر واتساب أو في الصالون قبل بدء الخدمة. السعر المعتمد هو ما نؤكده لك في الصالون، ويشمل الخدمة المذكورة فقط.
               </p>
               <h2>الحجوزات</h2>
               <p>
@@ -65,10 +65,10 @@ export default async function TermsPage({ params }: { params: Promise<{ lang: st
               <p>{d.salon}, {settings.addressEn}. WhatsApp and phone numbers are on the contact page.</p>
               <h2>Prices</h2>
               <p>
-                Prices are in UAE dirhams and cover the service named and nothing more. Where a price is
-                a range, it moves with the length, thickness or condition of your hair, and we confirm
-                the figure with you in the salon before we start. Prices change from time to time, and
-                the price that applies is the one we confirm on the day.
+                No prices are published on this site. We quote in UAE dirhams, and the figure moves with
+                the length, thickness and condition of your hair and with what you choose to put in it.
+                We tell you the price on WhatsApp or in the salon before we start, it covers the service
+                named and nothing more, and the price that applies is the one we confirm on the day.
               </p>
               <h2>Appointments</h2>
               <p>

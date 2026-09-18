@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import {
-  getContent, photosFor, faqsFor, priceFloor, categoryBySlug,
+  getContent, photosFor, faqsFor, leadServices, categoryBySlug,
 } from '@/lib/content';
 import { type Lang, isLang, dict, href, pick } from '@/lib/i18n';
 import { whatsappLink, waMessage, uniformHours, clock, prettyPhone, telLink } from '@/lib/format';
@@ -35,7 +35,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     name: P(c)('name'),
     tagline: P(c)('tagline'),
     image: c.tileImage,
-    from: priceFloor(content, c.slug),
+    services: leadServices(content, c.slug, lang),
   }));
 
   const henna = categoryBySlug(content, 'henna');
@@ -45,8 +45,8 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     ? 'حناء وضفائر وتجميل في المعيريض'
     : 'Henna, braiding and beauty in Al Maireed';
   const sub = lang === 'ar'
-    ? 'صالون سيدات في رأس الخيمة، مفتوح كل يوم من العاشرة صباحًا حتى العاشرة مساءً. كل الأسعار مذكورة على هذا الموقع، والحجز عبر واتساب.'
-    : 'A ladies salon in Ras Al Khaimah, open every day from ten in the morning until ten at night. Every price is on this site, and booking happens on WhatsApp.';
+    ? 'صالون سيدات في رأس الخيمة، مفتوح كل يوم من العاشرة صباحًا حتى العاشرة مساءً. الحجز عبر واتساب، ونخبرك بالسعر قبل حضورك.'
+    : 'A ladies salon in Ras Al Khaimah, open every day from ten in the morning until ten at night. Booking is on WhatsApp, and we tell you the price before you come in.';
 
   const meta = uniform
     ? [
@@ -76,8 +76,8 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
             <Heading title={lang === 'ar' ? 'ما نقدمه' : 'What we do'}>
               <p className="lede">
                 {lang === 'ar'
-                  ? 'عشر مجموعات من الخدمات، من خيط الحواجب بـ١٥ درهمًا إلى علاج البروتين. الأسعار في الأسفل هي أسعار الصالون، وإن كان هناك نطاق فسببه الطول أو الكثافة أو الحالة، ونخبرك بسعرك قبل أن نبدأ.'
-                  : 'Ten groups of services, from AED 15 brow threading to a full protein treatment. The prices below are the prices in the salon. Where there is a range it is because of length, thickness or condition, and we tell you where you fall before we start.'}
+                  ? 'عشر مجموعات من الخدمات، من خيط الحواجب إلى علاج البروتين. لا توجد أسعار على الموقع، لأن الخدمة نفسها تختلف كلفتها حسب الطول والكثافة وما تختارينه. أرسلي صورة عبر واتساب ونخبرك بالسعر قبل حضورك.'
+                  : 'Ten groups of services, from brow threading to a full protein treatment. There are no figures on the site, because the same service costs a different amount depending on length, thickness and what you choose. Send a photo on WhatsApp and we will tell you the price before you come in.'}
               </p>
             </Heading>
           </Reveal>
@@ -128,7 +128,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       <section className="section band-cream">
         <div className="wrap">
           <Reveal>
-            <Heading title={d.nav.menu}>
+            <Heading title={lang === 'ar' ? 'كل خدماتنا في صفحة واحدة' : 'Every service on one page'}>
               <p className="lede">{d.menuNote}</p>
             </Heading>
           </Reveal>

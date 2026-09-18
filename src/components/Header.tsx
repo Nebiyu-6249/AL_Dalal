@@ -116,7 +116,7 @@ export default function Header({
             ))}
             <Link className="flyout__item" href={L('/services')}>
               <b>{d.allServices}</b>
-              <span>{d.priceList}</span>
+              <span>{d.allServicesSub}</span>
             </Link>
           </div>
         </div>

@@ -6,9 +6,10 @@ import type { Faq } from '@/db/schema';
 const abs = (path: string) => `${origin()}${path}`;
 
 /**
- * The salon itself, with every service and its AED price attached as an offer
- * catalogue. Very few salon sites publish their prices in a form Google can
- * read, which is what makes this worth doing.
+ * The salon itself, with every service attached as an offer catalogue. The
+ * prices have gone, because the salon quotes them on WhatsApp, but the
+ * catalogue of service names is what Google reads to answer "what do they do",
+ * so it stays.
  */
 export function localBusinessLd(content: Content, lang: Lang) {
   const { settings } = content;
@@ -27,7 +28,7 @@ export function localBusinessLd(content: Content, lang: Lang) {
     logo: abs('/images/logo-badge-ivory.png'),
     telephone: prettyPhone(settings.phone),
     email: settings.email,
-    priceRange: 'AED 15 - AED 700',
+    priceRange: '$$',
     currenciesAccepted: 'AED',
     address: {
       '@type': 'PostalAddress',
@@ -76,17 +77,6 @@ export function localBusinessLd(content: Content, lang: Lang) {
           'name', lang,
         ),
       },
-      priceCurrency: 'AED',
-      ...(s.priceTo && s.priceTo !== s.priceFrom
-        ? {
-          priceSpecification: {
-            '@type': 'PriceSpecification',
-            minPrice: s.priceFrom,
-            maxPrice: s.priceTo,
-            priceCurrency: 'AED',
-          },
-        }
-        : { price: s.priceFrom }),
       availableAtOrFrom: { '@id': `${origin()}/#salon` },
     })),
   };
@@ -116,8 +106,6 @@ export function serviceLd(
           '@type': 'Service',
           name: pick(s as unknown as Record<string, unknown>, 'name', lang),
         },
-        priceCurrency: 'AED',
-        price: s.priceFrom,
       })),
     },
   };

@@ -10,7 +10,7 @@ export default async function LoginPage({
     <div className="a-login">
       <div className="a-login__box">
         <h1>Al Dalal admin</h1>
-        <p>Sign in to change prices, photos, opening hours and everything else on the site.</p>
+        <p>Sign in to change services, photos, opening hours and everything else on the site.</p>
         <form method="post" action="/api/auth/login">
           <input type="hidden" name="next" value={next ?? '/admin'} />
           <label className="a-field">

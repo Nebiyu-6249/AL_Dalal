@@ -1,15 +1,5 @@
-import type { Service, Settings, Hours } from '@/db/schema';
-import { type Lang, dict, pick } from './i18n';
-
-/** "AED 350 to 700", "AED 20 per line", "AED 250 each". */
-export function price(s: Service, lang: Lang) {
-  const d = dict(lang);
-  const unit = pick(s as unknown as Record<string, unknown>, 'unit', lang);
-  const range = s.priceTo && s.priceTo !== s.priceFrom
-    ? `${s.priceFrom}\u2009-\u2009${s.priceTo}`
-    : `${s.priceFrom}`;
-  return `${d.aed} ${range}${unit ? ` ${unit}` : ''}`;
-}
+import type { Settings, Hours } from '@/db/schema';
+import type { Lang } from './i18n';
 
 /** Digits only, as wa.me requires. */
 export const waNumber = (settings: Settings) => settings.whatsapp.replace(/\D/g, '');
@@ -25,12 +15,11 @@ export const waMessage = {
   general: (lang: Lang) => lang === 'ar'
     ? 'مرحبًا صالون الدلال، أرغب في حجز موعد.'
     : "Hello Al Dalal, I'd like to book an appointment.",
-  category: (lang: Lang, name: string) => lang === 'ar'
+  /** Used for a whole category and for one service alike: the salon quotes
+   *  on WhatsApp now, so every enquiry starts with the name and nothing else. */
+  enquiry: (lang: Lang, name: string) => lang === 'ar'
     ? `مرحبًا، أود الاستفسار عن ${name}.`
     : `Hello, I'd like to ask about ${name}.`,
-  service: (lang: Lang, name: string, p: string) => lang === 'ar'
-    ? `مرحبًا، أرغب في حجز: ${name} (${p}).`
-    : `Hello, I'd like to book: ${name} (${p}).`,
   gift: (lang: Lang, name: string) => lang === 'ar'
     ? `مرحبًا، أرغب في الاستفسار عن بطاقة هدية ${name}.`
     : `Hello, I'd like to ask about the ${name} gift card.`,
