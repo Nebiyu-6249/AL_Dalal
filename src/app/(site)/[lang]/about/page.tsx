@@ -49,7 +49,7 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
                   فريقنا يتحدث العربية والإنجليزية والأمهرية، وهذا يعني أنك ستجدين من تشرحين لها ما تريدينه بلغتك. الصالون للسيدات فقط.
                 </p>
                 <p>
-                  أسعارنا منشورة كاملة على هذا الموقع. إن كان هناك نطاق سعري فسببه طول الشعر أو كثافته أو حالته، ونخبرك بسعرك قبل أن نبدأ ولا نضيف شيئًا بعد ذلك.
+                  لا ننشر الأسعار على الموقع لأن الخدمة نفسها تختلف كلفتها حسب طول الشعر وكثافته وما تختارينه من إكستنشن وحلقات ومشابك. راسلينا على واتساب مع صورة ونخبرك بالسعر قبل حضورك، ونؤكده في الصالون قبل أن نبدأ ولا نضيف شيئًا بعد ذلك.
                 </p>
               </>
             ) : (
@@ -69,9 +69,10 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
                   what you want to in your own language. The salon is ladies only.
                 </p>
                 <p>
-                  Every price we charge is published on this site. Where a service has a range it is
-                  because of length, thickness or condition. We tell you where you fall before we start,
-                  and nothing gets added once you are in the chair.
+                  We do not publish prices, because the same service costs a different amount
+                  depending on length, thickness and what you choose to put in your hair. Send a photo
+                  on WhatsApp and we will tell you the price before you come in. We confirm it in the
+                  salon before we start, and nothing gets added once you are in the chair.
                 </p>
               </>
             )}

@@ -38,7 +38,12 @@ export default async function ContactAdmin() {
         <h3 style={{ margin: '1.75rem 0 0.75rem', fontSize: '1rem' }}>Printable menu</h3>
         <p className="a-sum" style={{ margin: '0 0 0.75rem' }}>
           Upload the PDF and a download button appears on the menu page. Leave it empty and
-          the page simply lists the prices instead.
+          the page simply lists every service instead.
+        </p>
+        <p className="a-sum" style={{ margin: '0 0 0.75rem' }}>
+          <b>The PDF is public, so it must not contain prices either.</b> The site no longer
+          shows any, and a downloadable price list would contradict that. Upload a menu with
+          the service names only.
         </p>
         <Upload name="menuPdf" defaultValue={s.menuPdf} accept="application/pdf,image/*" />
 

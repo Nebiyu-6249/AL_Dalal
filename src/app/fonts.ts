@@ -6,7 +6,7 @@ import { Marcellus, Instrument_Sans, Noto_Kufi_Arabic, IBM_Plex_Sans_Arabic } fr
  *
  * Marcellus is Roman inscriptional capitals, which is what the salon's own
  * shopfront sign is set in. Instrument Sans carries the body text and has
- * tabular figures, so the price columns line up.
+ * tabular figures, so opening hours and phone numbers line up.
  */
 const marcellus = Marcellus({
   subsets: ['latin'], weight: '400', display: 'swap', variable: '--font-marcellus',

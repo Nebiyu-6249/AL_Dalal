@@ -7,14 +7,14 @@ import NoDatabase from './NoDatabase';
 
 export const dynamic = 'force-dynamic';
 
-export default async function PricesPage() {
+export default async function ServicesPage() {
   const session = await getSession();
   const data = await getAdminContent();
 
   if (!data) {
     return (
-      <Chrome who={session?.name ?? ''} current="/admin" title="Prices"
-        intro="Every service on the site and what it costs.">
+      <Chrome who={session?.name ?? ''} current="/admin" title="Services"
+        intro="Every service on the site, in both languages.">
         <NoDatabase />
       </Chrome>
     );
@@ -26,9 +26,19 @@ export default async function PricesPage() {
     <Chrome
       who={session?.name ?? ''}
       current="/admin"
-      title="Prices"
-      intro={`All ${data.services.length} services. Changing a price here changes it on the service page, the menu page, the "from" line on the home page and the information Google reads, all at once.`}
+      title="Services"
+      intro={`All ${data.services.length} services. A name changed here changes it on the service page, the menu page, the tiles on the home page and the information Google reads, all at once.`}
     >
+      <div className="a-note">
+        <b>There are no price fields any more.</b>
+        <p style={{ margin: '0.5rem 0 0' }}>
+          The site does not show prices. They change with hair length, thickness and what the
+          client picks, so the salon quotes on WhatsApp and again in the chair. Add and name
+          services here as usual. The old figures are still in the database, untouched, in case
+          prices ever go back on the site.
+        </p>
+      </div>
+
       {data.categories.map((cat) => {
         const rows = data.services.filter((s) => s.categorySlug === cat.slug);
         return (
@@ -44,9 +54,7 @@ export default async function PricesPage() {
                     {s.nameEn}
                     {!s.published && <span className="a-hidden"> · hidden</span>}
                   </span>
-                  <span className="a-sum">
-                    AED {s.priceFrom}{s.priceTo && s.priceTo !== s.priceFrom ? ` - ${s.priceTo}` : ''}
-                  </span>
+                  <span className="a-sum">{s.groupEn}</span>
                 </summary>
                 <div className="a-item__body">
                   <ActionForm action={saveService}>
@@ -57,14 +65,6 @@ export default async function PricesPage() {
                       <Field label="Name, Arabic" name="nameAr" defaultValue={s.nameAr} ar />
                       <Field label="Group heading, English" name="groupEn" defaultValue={s.groupEn} />
                       <Field label="Group heading, Arabic" name="groupAr" defaultValue={s.groupAr} ar />
-                    </div>
-                    <div className="a-grid a-grid--4" style={{ marginTop: '0.85rem' }}>
-                      <Field label="Price from" name="priceFrom" type="number" defaultValue={s.priceFrom} required />
-                      <Field label="Price to" name="priceTo" type="number" defaultValue={s.priceTo}
-                        hint="leave empty for one price" />
-                      <Field label="Unit, English" name="unitEn" defaultValue={s.unitEn}
-                        placeholder="per line" />
-                      <Field label="Unit, Arabic" name="unitAr" defaultValue={s.unitAr} ar />
                     </div>
                     <div className="a-grid a-grid--2" style={{ marginTop: '0.85rem' }}>
                       <Field label="Note, English" name="noteEn" defaultValue={s.noteEn} />
@@ -100,12 +100,6 @@ export default async function PricesPage() {
             <Field label="Name, Arabic" name="nameAr" ar />
             <Field label="Group heading, Arabic" name="groupAr" ar />
             <Field label="Sort order" name="sortOrder" type="number" defaultValue={999} />
-          </div>
-          <div className="a-grid a-grid--4" style={{ marginTop: '0.85rem' }}>
-            <Field label="Price from" name="priceFrom" type="number" required />
-            <Field label="Price to" name="priceTo" type="number" hint="optional" />
-            <Field label="Unit, English" name="unitEn" />
-            <Field label="Unit, Arabic" name="unitAr" ar />
           </div>
           <div className="a-row">
             <Check label="Show on the site" name="published" defaultChecked />

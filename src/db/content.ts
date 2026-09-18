@@ -6,6 +6,10 @@
  * so the pages never render empty.
  *
  * Once the database is set up, edits made in /admin win over anything here.
+ *
+ * The price fields are still seeded, because the columns stay in the database
+ * and prices can be switched back on later. Nothing on the site renders them.
+ * The salon quotes on WhatsApp instead.
  */
 
 export type SeedService = {
@@ -63,12 +67,12 @@ export const CATEGORIES = [
     taglineAr: 'كورنروز، ضفائر، خياطة وإكستنشن',
     introEn:
       'Braiding, sew-in fixing, fixing by line, clips, rings and candle fixing. ' +
-      'A set runs from AED 100 to AED 600 because the price follows the length, the thickness ' +
-      'and how fine you want the parting. Send a photo of what you want on WhatsApp and we will tell you the price ' +
-      'and how long to set aside before you come in.',
+      'The price follows the length, the thickness and how fine you want the parting, so a small ' +
+      'set of cornrows and a full head down to the waist are not the same job. Send a photo of what ' +
+      'you want on WhatsApp and we will tell you the price and how long to set aside before you come in.',
     introAr:
       'ضفائر، تركيب بالخياطة، تركيب بالخط، مشابك، حلقات وتركيب بالشمع. ' +
-      'يتراوح السعر بين ١٠٠ و٦٠٠ درهم حسب الطول والكثافة ودقة الفرق. ' +
+      'السعر يتبع الطول والكثافة ودقة الفرق، فمجموعة صغيرة من الكورنروز تختلف عن رأس كامل حتى الخصر. ' +
       'أرسلي صورة لما ترغبين به عبر واتساب ونخبرك بالسعر والوقت اللازم قبل الحضور.',
     tileImage: '/images/tile-braiding.webp',
     heroImage: '/images/service-braiding.webp',
@@ -375,6 +379,9 @@ export const FAQS = [
     ['Do you come to the house for weddings?', 'هل تحضرون إلى المنزل للأعراس؟',
       'Yes, for henna, hair and makeup. Send us the date and the area on WhatsApp and we will tell you what we can do.',
       'نعم، للحناء والشعر والمكياج. أرسلي لنا التاريخ والمنطقة عبر واتساب ونخبرك بما يمكننا تقديمه.'],
+    ['Why are there no prices on the site?', 'لماذا لا توجد أسعار على الموقع؟',
+      'Because the same service costs different amounts depending on your hair. A braiding set can be a small job or most of a day, and extensions, rings and clips all change the figure. Send us a photo on WhatsApp and we will tell you the price before you come in, and we confirm it again in the salon before we start.',
+      'لأن الخدمة نفسها تختلف كلفتها حسب شعرك. مجموعة الضفائر قد تكون عملًا صغيرًا أو تستغرق معظم اليوم، والإكستنشن والحلقات والمشابك تغير السعر كلها. أرسلي لنا صورة عبر واتساب ونخبرك بالسعر قبل حضورك، ونؤكده مرة أخرى في الصالون قبل أن نبدأ.'],
     ['How do I pay?', 'كيف أدفع؟',
       'In the salon, when the work is finished. There is no online payment and no deposit for ordinary appointments.',
       'في الصالون بعد انتهاء الخدمة. لا يوجد دفع إلكتروني ولا عربون للمواعيد العادية.'],
@@ -397,14 +404,14 @@ export const FAQS = [
     ['Do I bring my own hair?', 'هل أحضر الشعر بنفسي؟',
       'You can, and plenty of people do. We also stock extensions in the salon. Message us before you buy so you get the right length and quantity for the style you want.',
       'يمكنك ذلك ويفعله الكثيرات. كما تتوفر لدينا الإكستنشن في الصالون. راسلينا قبل الشراء لتحصلي على الطول والكمية المناسبين.'],
-    ['Why does braiding range from AED 100 to AED 600?', 'لماذا يتراوح سعر الضفائر بين ١٠٠ و٦٠٠ درهم؟',
-      'Because a small set of cornrows and a full head of knotless braids down to the waist are not the same job. The price follows length, thickness and how many braids there are. We quote from a photo before you come in.',
-      'لأن مجموعة صغيرة من الكورنروز تختلف عن رأس كامل من الضفائر حتى الخصر. السعر يتبع الطول والكثافة وعدد الضفائر، ونحدده من الصورة قبل حضورك.'],
+    ['Why is there no price for braiding?', 'لماذا لا يوجد سعر ثابت للضفائر؟',
+      'Because a small set of cornrows and a full head of knotless braids down to the waist are not the same job. The price follows length, thickness and how many braids there are, and extensions, rings and clips change it again. We quote from a photo before you come in.',
+      'لأن مجموعة صغيرة من الكورنروز تختلف عن رأس كامل من الضفائر حتى الخصر. السعر يتبع الطول والكثافة وعدد الضفائر، والإكستنشن والحلقات والمشابك تغيره أيضًا. نحدده من الصورة قبل حضورك.'],
   ]),
   ...F('hair', [
-    ['Why is protein treatment AED 350 to 700?', 'لماذا سعر البروتين بين ٣٥٠ و٧٠٠ درهم؟',
-      'Length and condition. Short hair in good condition sits at the bottom of that range, long or damaged hair needs more product and more time. We look at your hair and tell you the price before we open anything.',
-      'بسبب الطول والحالة. الشعر القصير السليم في أدنى النطاق، والشعر الطويل أو التالف يحتاج مواد ووقتًا أكثر. نعاين شعرك ونحدد السعر قبل البدء.'],
+    ['Why does the price of a protein treatment vary?', 'لماذا يختلف سعر علاج البروتين؟',
+      'Length and condition. Short hair in good condition takes less product and less time than long or damaged hair. We look at your hair and tell you the price before we open anything.',
+      'بسبب الطول والحالة. الشعر القصير السليم يحتاج مواد ووقتًا أقل من الشعر الطويل أو التالف. نعاين شعرك ونخبرك بالسعر قبل أن نفتح أي منتج.'],
     ['Which treatment should I pick?', 'أي علاج أختار؟',
       'It depends on what you want to fix. Keratin and botox are for smoothing and frizz, protein is for strength after damage, kabiyan and the oil treatments are for condition rather than shape. Ask when you arrive and we will look at your hair rather than guess.',
       'يعتمد على ما ترغبين بمعالجته. الكيراتين والبوتوكس للنعومة والتجعد، والبروتين لتقوية الشعر التالف، والكابيان وحمامات الزيت للترطيب أكثر من الفرد. اسألينا عند الحضور لنعاين شعرك.'],
@@ -417,8 +424,8 @@ export const FAQS = [
       'About two to three weeks before the regrowth starts to show. Extensions go three to four weeks between refills.',
       'من أسبوعين إلى ثلاثة قبل أن يظهر النمو. أما التركيب فمن ثلاثة إلى أربعة أسابيع بين كل تعبئة.'],
     ['Can you remove nails that were done somewhere else?', 'هل تزيلون أظافر ركبت في مكان آخر؟',
-      'Yes. Removal is AED 20 to 50 depending on what is on there. Better that than picking them off yourself, which takes the top layer of your natural nail with it.',
-      'نعم. الإزالة من ٢٠ إلى ٥٠ درهمًا حسب نوع التركيب. وهذا أفضل من نزعها بنفسك لأن ذلك يقشر الطبقة العليا من الظفر الطبيعي.'],
+      'Yes. Removal has a price of its own and it depends on what is on there, so we look first and tell you. Better that than picking them off yourself, which takes the top layer of your natural nail with it.',
+      'نعم. للإزالة سعرها الخاص ويعتمد على نوع التركيب، فنعاينه أولًا ونخبرك به. وهذا أفضل من نزعها بنفسك لأن ذلك يقشر الطبقة العليا من الظفر الطبيعي.'],
     ['Hard gel, acrylic or dip powder?', 'هارد جل أم أكريليك أم ديب باودر؟',
       'Acrylic is the strongest and the best choice for long shapes. Hard gel is lighter and looks more natural. Dip powder sits in between and goes on fastest. Tell us what you do with your hands all day and we will point you at one.',
       'الأكريليك الأقوى والأنسب للأشكال الطويلة. الهارد جل أخف ومظهره أكثر طبيعية. والديب باودر بينهما والأسرع تطبيقًا. أخبرينا بطبيعة عملك اليومي ونرشدك للأنسب.'],
@@ -431,13 +438,13 @@ export const FAQS = [
       'Around five millimetres, which is roughly two weeks of growth. Shorter than that and the wax has nothing to hold.',
       'حوالي خمسة مليمترات، أي ما ينمو خلال أسبوعين تقريبًا. وإن كان أقصر فلن يتمكن الشمع من الإمساك به.'],
     ['What is in the full face clean-up?', 'ماذا يشمل تنظيف الوجه الكامل؟',
-      'Cleansing, a scrub and a vitamin treatment, AED 50 to 70. The facial at AED 100 and the special facial at AED 150 add steam, extraction and a mask.',
-      'تنظيف وتقشير وعلاج بالفيتامينات، من ٥٠ إلى ٧٠ درهمًا. أما الفيشل بـ١٠٠ درهم والفيشل الخاص بـ١٥٠ درهمًا فيضيفان البخار والتنظيف العميق والماسك.'],
+      'Cleansing, a scrub and a vitamin treatment. The facial and the special facial add steam, extraction and a mask, and they cost more than the clean-up. Ask on WhatsApp and we will tell you what each one comes to.',
+      'تنظيف وتقشير وعلاج بالفيتامينات. أما الفيشل والفيشل الخاص فيضيفان البخار والتنظيف العميق والماسك، وسعرهما أعلى من التنظيف. راسلينا على واتساب ونخبرك بسعر كل واحد منها.'],
   ]),
   ...F('lashes', [
     ['How long do eyelash extensions last?', 'كم تدوم الرموش المركبة؟',
-      'Two to three weeks before they need a refill at AED 75. The one month set at AED 200 to 250 is built to run longer between visits.',
-      'من أسبوعين إلى ثلاثة قبل الحاجة إلى تعبئة بـ٧٥ درهمًا. أما رموش الشهر بـ٢٠٠ إلى ٢٥٠ درهمًا فمصممة لتدوم أطول.'],
+      'Two to three weeks before they need a refill. The one month set is built to run longer between visits and costs more to put on. Ask and we will tell you both prices.',
+      'من أسبوعين إلى ثلاثة قبل الحاجة إلى تعبئة. أما رموش الشهر فمصممة لتدوم أطول بين الزيارات وسعرها أعلى. اسألينا ونخبرك بسعر الاثنين.'],
     ['Does threading hurt?', 'هل الخيط مؤلم؟',
       'A little on the first visit, much less after that. It is quicker than waxing and it does not lift the skin, which is why most people stay with it.',
       'قليلًا في المرة الأولى، وأقل بكثير بعدها. وهو أسرع من الشمع ولا يشد الجلد، ولهذا تفضله الأغلبية.'],

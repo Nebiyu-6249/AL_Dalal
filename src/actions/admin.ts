@@ -41,7 +41,7 @@ const run = async (fn: () => Promise<void>, message: string): Promise<ActionStat
   }
 };
 
-/* ------------------------------------------------------------------ prices */
+/* ---------------------------------------------------------------- services */
 
 export async function saveService(_prev: ActionState, f: FormData): Promise<ActionState> {
   return run(async () => {
@@ -52,15 +52,16 @@ export async function saveService(_prev: ActionState, f: FormData): Promise<Acti
       groupEn: str(f, 'groupEn'), groupAr: str(f, 'groupAr'),
       nameEn: str(f, 'nameEn'), nameAr: str(f, 'nameAr'),
       noteEn: str(f, 'noteEn'), noteAr: str(f, 'noteAr'),
-      priceFrom: Number(str(f, 'priceFrom') || 0),
-      priceTo: num(f, 'priceTo'),
-      unitEn: str(f, 'unitEn'), unitAr: str(f, 'unitAr'),
       sortOrder: Number(str(f, 'sortOrder') || 0),
       published: bool(f, 'published'),
     };
     if (!values.nameEn) throw new Error('The English name cannot be empty.');
+    // The price columns stay in the database so prices can be switched back on
+    // later without re-entering 74 numbers. Nothing reads them any more, so an
+    // update leaves whatever is there alone and a new row takes a zero, which
+    // price_from being NOT NULL requires.
     if (id) await db.update(schema.services).set(values).where(eq(schema.services.id, id));
-    else await db.insert(schema.services).values(values);
+    else await db.insert(schema.services).values({ ...values, priceFrom: 0 });
   }, 'Saved.');
 }
 

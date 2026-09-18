@@ -2,7 +2,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { Service, Photo, Testimonial, Faq } from '@/db/schema';
 import { type Lang, dict, href, pick } from '@/lib/i18n';
-import { price } from '@/lib/format';
 
 /* --------------------------------------------------------------- imagery */
 
@@ -59,30 +58,28 @@ export function Strip({ photos, lang }: { photos: Photo[]; lang: Lang }) {
   );
 }
 
-/* ------------------------------------------------------------ price lists */
+/* ---------------------------------------------------------- service lists */
 
-/** One row. The gold dot leader draws across on hover, echoing the leaders
- *  printed on the salon's paper menu. */
-function Row({ s, lang, waHref }: { s: Service; lang: Lang; waHref: string }) {
+/** One service. The whole item is a WhatsApp link, because a figure is no
+ *  longer printed beside it and asking is now the next step. The gold dot
+ *  leader draws across on hover, echoing the leaders on the paper menu. */
+function ServiceItem({ s, lang, waHref }: { s: Service; lang: Lang; waHref: string }) {
+  const d = dict(lang);
   const name = pick(s as unknown as Record<string, unknown>, 'name', lang);
   const note = pick(s as unknown as Record<string, unknown>, 'note', lang);
-  const amount = price(s, lang);
   return (
-    <li className="price">
-      <span className="price__leader" aria-hidden="true" />
-      <span className="price__name">
-        <a href={waHref} target="_blank" rel="noopener noreferrer"
-          style={{ color: 'inherit', textDecoration: 'none' }}>
-          {name}
-        </a>
-        {note && <span className="price__note">{note}</span>}
-      </span>
-      <span className="price__amount">{amount}</span>
+    <li className="svc">
+      <a className="svc__link" href={waHref} target="_blank" rel="noopener noreferrer">
+        <span className="svc__leader" aria-hidden="true" />
+        <span className="svc__name">{name}</span>
+        {note && <span className="svc__note">{note}</span>}
+        <span className="svc__ask">{d.ask}</span>
+      </a>
     </li>
   );
 }
 
-export function PriceList({
+export function ServiceList({
   groups, lang, waFor,
 }: {
   groups: Array<{ en: string; ar: string; items: Service[] }>;
@@ -92,15 +89,15 @@ export function PriceList({
   return (
     <div>
       {groups.map((g) => (
-        <div className="price-group" key={g.en}>
+        <div className="svc-group" key={g.en}>
           {g.en && (
             <>
-              <h3 className="price-group__name">{lang === 'ar' ? g.ar || g.en : g.en}</h3>
-              <div className="price-group__rule" />
+              <h3 className="svc-group__name">{lang === 'ar' ? g.ar || g.en : g.en}</h3>
+              <div className="svc-group__rule" />
             </>
           )}
-          <ul className="prices">
-            {g.items.map((s) => <Row key={s.id} s={s} lang={lang} waHref={waFor(s)} />)}
+          <ul className="svcs">
+            {g.items.map((s) => <ServiceItem key={s.id} s={s} lang={lang} waHref={waFor(s)} />)}
           </ul>
         </div>
       ))}
@@ -112,11 +109,10 @@ export function PriceList({
 
 export type Tile = {
   slug: string; name: string; tagline: string;
-  image: string; from: number;
+  image: string; services: string[];
 };
 
 export function CategoryTiles({ tiles, lang }: { tiles: Tile[]; lang: Lang }) {
-  const d = dict(lang);
   return (
     <div className="cats">
       {tiles.map((c) => (
@@ -127,8 +123,8 @@ export function CategoryTiles({ tiles, lang }: { tiles: Tile[]; lang: Lang }) {
           </div>
           <div className="cat__name">{c.name}</div>
           <div className="cat__line">{c.tagline}</div>
-          {c.from > 0 && (
-            <div className="cat__from">{d.from} {d.aed} {c.from}</div>
+          {c.services.length > 0 && (
+            <div className="cat__services">{c.services.join(' \u00b7 ')}</div>
           )}
         </Link>
       ))}

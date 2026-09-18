@@ -9,6 +9,7 @@ import type {
 import {
   SETTINGS, HOURS, CATEGORIES, SERVICES, GIFT_CARDS, TESTIMONIALS, FAQS, PHOTOS,
 } from '@/db/content';
+import { type Lang, pick } from './i18n';
 
 export const hasDatabase = () => Boolean(process.env.DATABASE_URL);
 
@@ -129,11 +130,10 @@ export const photosFor = (c: Content, slot: string) =>
 export const categoryBySlug = (c: Content, slug: string) =>
   c.categories.find((x) => x.slug === slug);
 
-/** Lowest price in a category, for the "from AED x" line on the home tiles. */
-export const priceFloor = (c: Content, slug: string) => {
-  const list = servicesFor(c, slug);
-  return list.length ? Math.min(...list.map((s) => s.priceFrom)) : 0;
-};
+/** The first few service names in a category, for the line under a tile. */
+export const leadServices = (c: Content, slug: string, lang: Lang, count = 3) =>
+  servicesFor(c, slug).slice(0, count)
+    .map((s) => pick(s as unknown as Record<string, unknown>, 'name', lang));
 
 /** Groups a category's services in menu order, keeping the printed headings. */
 export function grouped(c: Content, slug: string) {

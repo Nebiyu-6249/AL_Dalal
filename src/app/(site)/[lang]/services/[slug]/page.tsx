@@ -2,13 +2,13 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import {
-  getContent, categoryBySlug, grouped, faqsFor, photosFor, servicesFor,
+  getContent, categoryBySlug, grouped, faqsFor, photosFor,
 } from '@/lib/content';
 import { type Lang, LANGS, isLang, dict, href, pick } from '@/lib/i18n';
-import { whatsappLink, waMessage, price } from '@/lib/format';
+import { whatsappLink, waMessage } from '@/lib/format';
 import { serviceLd, faqLd, breadcrumbLd, JsonLd } from '@/lib/schema-org';
 import Reveal from '@/components/Reveal';
-import { PriceList, Faqs, Gallery, Arch, Heading } from '@/components/blocks';
+import { ServiceList, Faqs, Gallery, Arch, Heading } from '@/components/blocks';
 import { WhatsAppIcon } from '@/components/Icons';
 
 export const revalidate = 3600;
@@ -59,11 +59,9 @@ export default async function CategoryPage(
   const name = P(cat)('name');
   const faqs = faqsFor(content, slug);
   const gallery = photosFor(content, `gallery-${slug}`);
-  const rows = servicesFor(content, slug);
-  const floor = rows.length ? Math.min(...rows.map((s) => s.priceFrom)) : 0;
 
   const categoryWa = whatsappLink(
-    content.settings, waMessage.category(lang, name),
+    content.settings, waMessage.enquiry(lang, name),
   );
 
   return (
@@ -84,11 +82,6 @@ export default async function CategoryPage(
                 <a className="btn btn--primary" href={categoryWa} target="_blank" rel="noopener noreferrer">
                   <WhatsAppIcon />{d.book}
                 </a>
-                {floor > 0 && (
-                  <span className="btn btn--ghost" style={{ pointerEvents: 'none' }}>
-                    {d.from} {d.aed} {floor}
-                  </span>
-                )}
               </p>
             </Reveal>
           </div>
@@ -96,22 +89,21 @@ export default async function CategoryPage(
       </section>
 
       <section className="section band-cream">
-        <div className="wrap" style={{ maxWidth: '52rem' }}>
+        <div className="wrap">
           <Reveal>
-            <Heading title={d.priceList} />
-            <PriceList
+            <Heading title={d.nav.services} />
+            <ServiceList
               lang={lang}
               groups={grouped(content, slug)}
               waFor={(s) => whatsappLink(
                 content.settings,
-                waMessage.service(
+                waMessage.enquiry(
                   lang,
                   pick(s as unknown as Record<string, unknown>, 'name', lang),
-                  price(s, lang),
                 ),
               )}
             />
-            <p className="price-note">{d.menuNote}</p>
+            <p className="menu-note">{d.menuNote}</p>
           </Reveal>
         </div>
       </section>
