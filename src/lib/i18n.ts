@@ -66,7 +66,7 @@ export const t = {
     closed: 'Closed',
     menuNote: 'There are no prices on this page. The same service costs a different amount depending on length, thickness and what you choose to put in your hair, so we quote on WhatsApp before you come in and confirm it in the salon before we start. Choose any service to ask about it.',
     noMenuPdf: 'The printable menu is being prepared. Everything we do is listed on this page in the meantime.',
-    teamHeading: 'The people who do the work',
+    teamHeading: 'The Faces of Al Dalal',
   },
   ar: {
     salon: 'صالون الدلال للحناء والتجميل',
