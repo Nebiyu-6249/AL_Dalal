@@ -41,6 +41,7 @@ export async function POST(req: NextRequest) {
   const blob = await put(`uploads/${Date.now()}-${safe}`, file, {
     access: 'public',
     addRandomSuffix: false,
+    token: process.env.BLOB1_READ_WRITE_TOKEN,
   });
 
   return NextResponse.json({ url: blob.url });
