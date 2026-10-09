@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
 
   const safe = file.name.toLowerCase().replace(/[^a-z0-9.]+/g, '-').replace(/^-+|-+$/g, '');
   const blob = await put(`uploads/${Date.now()}-${safe}`, file, {
-    access: 'public',
+    access: 'private',
     addRandomSuffix: false,
   });
 
