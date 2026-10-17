@@ -10,8 +10,9 @@ import { faqLd, JsonLd } from '@/lib/schema-org';
 import Hero from '@/components/Hero';
 import Reveal from '@/components/Reveal';
 import {
-  CategoryTiles, Faqs, Testimonials, Strip, Arch, Heading,
+  CategoryTiles, Faqs, Strip, Arch, Heading,
 } from '@/components/blocks';
+import Reviews from '@/components/Reviews';
 import { WhatsAppIcon, PinIcon } from '@/components/Icons';
 
 export const revalidate = 3600;
@@ -185,7 +186,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
               </Heading>
             </Reveal>
             <Reveal delay={80}>
-              <Testimonials items={content.testimonials} lang={lang} />
+              <Reviews items={content.testimonials} lang={lang} />
             </Reveal>
           </div>
         </section>

@@ -7,12 +7,16 @@ import { useEffect, useRef, type ReactNode } from 'react';
  * and it does nothing at all when the visitor has asked for reduced motion.
  */
 export default function Reveal({
-  children, delay = 0, as: Tag = 'div', className = '',
+  children, delay = 0, as: Tag = 'div', className = '', bare = false,
 }: {
   children: ReactNode;
   delay?: number;
   as?: 'div' | 'section' | 'li' | 'article';
   className?: string;
+  /** Observe only, without the block's own fade. For a block that animates its
+   *  own parts, such as a service group drawing its hairline and then its
+   *  items, so the whole thing does not fade twice. */
+  bare?: boolean;
 }) {
   const ref = useRef<HTMLElement>(null);
 
@@ -43,7 +47,7 @@ export default function Reveal({
   }, [delay]);
 
   return (
-    <Tag ref={ref as never} className={`reveal ${className}`.trim()} data-shown="false">
+    <Tag ref={ref as never} className={`${bare ? '' : 'reveal '}${className}`.trim()} data-shown="false">
       {children}
     </Tag>
   );

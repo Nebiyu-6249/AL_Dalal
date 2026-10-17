@@ -109,24 +109,31 @@ img { max-width: 100%; height: auto; display: block; }
 .section { padding-block: var(--section-y); }
 .section--tight { padding-block: clamp(2.75rem, 6vw, 4.5rem); }
 
+/* Two classes, one meaning. .band-dark paints the espresso background;
+   .on-dark says "this sits on a dark surface", which is also true of the hero,
+   where the darkness comes from a photograph rather than a background colour.
+   Every rule below answers to both, so a new dark section inherits the right
+   text and control colours from its context instead of overriding them. */
 .band-dark { background: var(--espresso); color: var(--on-dark); }
-.band-dark h1, .band-dark h2, .band-dark h3 { color: var(--on-dark); }
-.band-dark a { color: var(--gold); }
-.band-dark a:hover { color: #fff; }
+.band-dark h1, .band-dark h2, .band-dark h3,
+.on-dark h1, .on-dark h2, .on-dark h3 { color: var(--on-dark); }
+/* Buttons carry their own colours, so they stay out of the link rule. */
+.band-dark a:not(.btn), .on-dark a:not(.btn) { color: var(--gold); }
+.band-dark a:not(.btn):hover, .on-dark a:not(.btn):hover { color: #fff; }
 .band-cream { background: var(--cream); }
 .band-blush { background: var(--blush); }
 
 /* A short gold rule that reads as the ruled line on the printed menu. */
 .rule { width: 3.25rem; height: 1px; background: var(--gold-mid); border: 0; margin: 0 0 1.6rem; }
-.band-dark .rule { background: var(--gold); }
+.band-dark .rule, .on-dark .rule { background: var(--gold); }
 [dir='rtl'] .rule { margin-inline: 0 auto; margin-inline-start: 0; }
 
 .lede { font-size: clamp(1.08rem, 1rem + 0.4vw, 1.28rem); line-height: 1.6; color: var(--brown); }
-.band-dark .lede { color: var(--on-dark-2); }
+.band-dark .lede, .on-dark .lede { color: var(--on-dark-2); }
 
 .head { margin-bottom: clamp(2rem, 4vw, 3.25rem); }
 .head p { color: var(--taupe); font-size: 1.0625rem; }
-.band-dark .head p { color: var(--on-dark-2); }
+.band-dark .head p, .on-dark .head p { color: var(--on-dark-2); }
 
 /* ---------------------------------------------------------------- controls */
 
@@ -142,8 +149,8 @@ img { max-width: 100%; height: auto; display: block; }
 .btn--primary:hover { background: var(--gold-deep); border-color: var(--gold-deep); color: #fff; }
 .btn--ghost { background: transparent; color: var(--brown); border-color: var(--gold-mid); }
 .btn--ghost:hover { background: var(--gold-mid); color: #fff; }
-.band-dark .btn--ghost { color: var(--on-dark); border-color: var(--gold); }
-.band-dark .btn--ghost:hover { background: var(--gold); color: var(--espresso); }
+.band-dark .btn--ghost, .on-dark .btn--ghost { color: var(--on-dark); border-color: var(--gold); }
+.band-dark .btn--ghost:hover, .on-dark .btn--ghost:hover { background: var(--gold); color: var(--espresso); }
 .btn--gold { background: var(--gold-mid); color: #fff; border-color: var(--gold-mid); }
 .btn--gold:hover { background: var(--gold-deep); border-color: var(--gold-deep); }
 .btn svg { width: 1.05em; height: 1.05em; flex: none; }
@@ -167,64 +174,85 @@ img { max-width: 100%; height: auto; display: block; }
 .frame { position: relative; overflow: hidden; background: var(--cream); }
 .frame img { width: 100%; height: 100%; object-fit: cover; }
 
-/* ------------------------------------------------------------ service grid */
+/* ----------------------------------------------------------- service lists */
 
-.svc-group + .svc-group { margin-top: 2.6rem; }
+.svc-group + .svc-group { margin-top: 2.1rem; }
+
+/* The heading sits at the inline start and a hairline runs from it to the
+   inline end, the way a course is ruled off on a printed menu. */
+.svc-group__head { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.4rem; }
 .svc-group__name {
   font-family: var(--font-display); font-size: 1.22rem; color: var(--gold-deep);
-  margin: 0 0 0.35rem;
+  margin: 0; flex: 0 1 auto;
 }
-.svc-group__rule { height: 1px; background: var(--gold); opacity: 0.65; margin-bottom: 0.25rem; }
-
-/* One column on a phone, two from 620px, three from 980px. The group heading
-   above each grid runs the full width, the way a heading does on the paper
-   menu. */
-.svcs { margin: 0; padding: 0; list-style: none; display: grid; }
-@media (min-width: 620px) {
-  .svcs { grid-template-columns: repeat(2, 1fr); column-gap: clamp(1.5rem, 3vw, 2.75rem); }
+.svc-group__rule {
+  flex: 1 1 2rem; min-width: 2rem; height: 1px; background: var(--gold); opacity: 0.65;
+  transform: scaleX(0); transform-origin: left center;
+  transition: transform 320ms var(--ease);
 }
-@media (min-width: 980px) { .svcs { grid-template-columns: repeat(3, 1fr); } }
+[dir='rtl'] .svc-group__rule { transform-origin: right center; }
+.svc-group[data-shown='true'] .svc-group__rule { transform: scaleX(1); }
 
-/* The item fills its row, so a service carrying a note does not drop the
-   hairline out of step with the ones beside it. */
-.svc { display: grid; }
+/* Multi-column, not grid. The browser balances the columns and the eye reads
+   each one top to bottom, as on the paper menu, so a group whose count is not
+   a multiple of three no longer strands an item on a row of its own. */
+.svcs {
+  margin: 0; padding: 0; list-style: none;
+  margin-inline: -0.6rem;
+  column-count: 1; column-gap: 3rem;
+}
+@media (min-width: 640px) { .svcs { column-count: 2; } }
+@media (min-width: 1024px) { .svcs { column-count: 3; } }
+/* Three items or fewer never fill three columns, so they run full width and
+   read as a deliberate short group. */
+.svcs--short { column-count: 1; }
+
+.svc { break-inside: avoid; opacity: 0; }
+.svc-group[data-shown='true'] .svc {
+  opacity: 1;
+  transition: opacity 300ms var(--ease);
+  /* The hairline draws first, then the items arrive 24ms apart. The component
+     caps the index, so a 23-item group finishes with the eighth. */
+  transition-delay: calc(320ms + var(--svc-i, 0) * 24ms);
+}
+
 .svc__link {
-  display: grid; grid-template-columns: 1fr auto; align-items: baseline;
-  align-content: start; column-gap: 0.75rem;
-  padding: 0.72rem 0; border-bottom: var(--line);
-  position: relative; color: inherit; text-decoration: none;
+  display: block; position: relative; color: inherit; text-decoration: none;
+  padding: 0.46rem 0.6rem; border-bottom: var(--line);
+  transition: background var(--fast) var(--ease);
 }
-.svc__name {
-  grid-area: 1 / 1; font-size: 1.0125rem;
-  transition: color var(--fast) var(--ease);
-}
-.svc__note {
-  grid-area: 2 / 1 / 3 / 3; font-size: 0.875rem; color: var(--taupe);
-  margin-top: 0.15rem;
-}
+.svc__row { display: flex; align-items: baseline; gap: 0.6rem; }
+.svc__name { font-size: 1.0125rem; transition: color var(--fast) var(--ease); }
+.svc__note { display: block; font-size: 0.875rem; color: var(--taupe); margin-top: 0.1rem; }
 .svc__ask {
-  grid-area: 1 / 2; font-size: 0.8rem; color: var(--gold-deep); white-space: nowrap;
+  font-size: 0.8rem; color: var(--gold-deep); white-space: nowrap;
   opacity: 0; transition: opacity var(--fast) var(--ease);
 }
 
-/* The dot leader from the printed menu. It draws across the item on hover,
-   which is the one piece of motion the whole site is built around. */
+/* The dot leader from the printed menu. It used to run from the name to the
+   price; it now runs from the name to the word that replaced it. */
 .svc__leader {
-  position: absolute; inset-block-end: -1px; inset-inline-start: 0;
-  height: 1px; width: 100%;
+  flex: 1 1 1.5rem; min-width: 1.5rem; height: 1px;
   background-image: radial-gradient(circle, var(--gold) 1px, transparent 1.4px);
   background-size: 6px 1px; background-repeat: repeat-x;
   transform: scaleX(0); transform-origin: left center;
-  transition: transform 260ms var(--ease);
-  opacity: 0.9; pointer-events: none;
+  transition: transform 240ms var(--ease);
+  opacity: 0.9;
 }
 [dir='rtl'] .svc__leader { transform-origin: right center; }
+
+.svc__link:hover, .svc__link:focus-visible { background: var(--cream); }
+.band-cream .svc__link:hover, .band-cream .svc__link:focus-visible { background: var(--ivory); }
 .svc__link:hover .svc__leader, .svc__link:focus-visible .svc__leader { transform: scaleX(1); }
 .svc__link:hover .svc__name, .svc__link:focus-visible .svc__name { color: var(--gold-deep); }
 .svc__link:hover .svc__ask, .svc__link:focus-visible .svc__ask { opacity: 1; }
 
-/* No hover on a phone, so the word stands there the whole time. */
-@media (hover: none) { .svc__ask { opacity: 1; } }
+/* No hover on a phone, so the leader and the word stand there the whole time.
+   An affordance nobody can discover is not an affordance. */
+@media (hover: none) {
+  .svc__ask { opacity: 1; }
+  .svc__leader { transform: scaleX(1); }
+}
 
 .menu-note {
   margin-top: 2rem; font-size: 0.92rem; color: var(--taupe);
@@ -387,12 +415,57 @@ img { max-width: 100%; height: auto; display: block; }
 
 /* ------------------------------------------------------------ testimonials */
 
-.quotes { display: grid; gap: clamp(1.5rem, 3vw, 2.25rem); }
-@media (min-width: 780px) { .quotes { grid-template-columns: repeat(2, 1fr); } }
-.quote { border-top: 1px solid rgba(205, 185, 143, 0.32); padding-top: 1.4rem; }
+/* A native scroll container, so trackpad, touch, shift-scroll and the keyboard
+   all work without a line of script. The arrows only call scrollBy. */
+.carousel { --quote-gap: clamp(1.25rem, 2.5vw, 2rem); display: flex; flex-direction: column; gap: 1.25rem; }
+
+/* Below the track and centred on a phone, above it and at the inline end on a
+   wider screen. Never over the cards, where they would cover the review. */
+.carousel__nav { display: flex; gap: 0.6rem; justify-content: center; order: 2; }
+@media (min-width: 780px) { .carousel__nav { justify-content: end; order: 0; } }
+
+.carousel__arrow {
+  width: 44px; height: 44px; padding: 0; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: 1px solid var(--gold); color: var(--gold);
+  transition: background var(--fast) var(--ease), color var(--fast) var(--ease),
+              border-color var(--fast) var(--ease);
+}
+.carousel__arrow svg { width: 20px; height: 20px; }
+/* The chevron is drawn pointing to the inline start, then mirrored for the
+   other direction and for Arabic. It never moves. */
+.carousel__arrow--next svg { transform: scaleX(-1); }
+[dir='rtl'] .carousel__arrow--prev svg { transform: scaleX(-1); }
+[dir='rtl'] .carousel__arrow--next svg { transform: none; }
+.carousel__arrow:hover:not(:disabled), .carousel__arrow:focus-visible:not(:disabled) {
+  background: var(--gold-mid); border-color: var(--gold-mid); color: var(--espresso);
+}
+.carousel__arrow:disabled { opacity: 0.35; cursor: default; }
+
+.carousel__track {
+  display: flex; align-items: stretch; gap: var(--quote-gap);
+  margin: 0; padding: 0; list-style: none;
+  overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+.carousel__track::-webkit-scrollbar { display: none; }
+
+/* One card below 640px, two from 640px, three from 1024px. The gap comes out
+   of the basis, so a fourth card never peeks in at the edge. */
+.carousel__item { flex: 0 0 100%; display: flex; scroll-snap-align: start; }
+@media (min-width: 640px) { .carousel__item { flex-basis: calc((100% - var(--quote-gap)) / 2); } }
+@media (min-width: 1024px) { .carousel__item { flex-basis: calc((100% - 2 * var(--quote-gap)) / 3); } }
+
+/* Equal heights, with the attribution pushed to the bottom of every card, so
+   the short review and the long one still put their names on one line. */
+.quote {
+  flex: 1; display: flex; flex-direction: column; margin: 0;
+  border-top: 1px solid rgba(205, 185, 143, 0.32); padding-top: 1.4rem;
+}
 .quote__stars { color: var(--gold); letter-spacing: 0.18em; font-size: 0.9rem; }
-.quote__body { margin: 0.7rem 0 1rem; color: var(--on-dark); font-size: 1.0125rem; }
-.quote__who { font-size: 0.875rem; color: var(--on-dark-2); }
+.quote__body { margin: 0.7rem 0 1.35rem; color: var(--on-dark); font-size: 1.0125rem; }
+.quote__body p { margin: 0; max-width: none; }
+.quote__who { margin-top: auto; font-size: 0.875rem; color: var(--on-dark-2); }
 
 /* -------------------------------------------------------------------- faqs */
 
@@ -421,18 +494,28 @@ img { max-width: 100%; height: auto; display: block; }
 }
 
 .callout { border: 1px solid var(--gold); padding: clamp(1.5rem, 3vw, 2.25rem); background: var(--cream); }
-.band-dark .callout { background: var(--espresso-2); border-color: rgba(205, 185, 143, 0.3); }
+.band-dark .callout, .on-dark .callout { background: var(--espresso-2); border-color: rgba(205, 185, 143, 0.3); }
 
 /* -------------------------------------------------------------- gift cards */
 
-.gifts { display: grid; gap: clamp(1.5rem, 3vw, 2.5rem); }
-@media (min-width: 760px) { .gifts { grid-template-columns: repeat(2, 1fr); } }
-.gift { display: flex; flex-direction: column; }
-.gift__media { aspect-ratio: 16 / 10; margin-bottom: 1.15rem; }
+/* Four seasonal cards, which divide evenly into two columns and into four, so
+   no row is ever left half empty. */
+.gifts { display: grid; gap: 1.5rem; align-items: stretch; }
+@media (min-width: 640px) { .gifts { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .gifts { grid-template-columns: repeat(4, 1fr); gap: 2rem; } }
+
+.gift { display: flex; flex-direction: column; height: 100%; }
+/* The salon uploads these pictures from a phone in whatever shape they arrive,
+   so the card holds the ratio and the picture is cropped to it. Without this
+   every card is a different height and the rows cannot line up. */
+.gift__media { aspect-ratio: 4 / 3; margin-bottom: 1.05rem; }
 .gift__tag { font-size: 0.8rem; color: var(--gold-deep); margin-bottom: 0.35rem; }
 .gift h3 { margin-bottom: 0.55rem; }
 .gift p { font-size: 0.985rem; }
-.gift .btn { margin-top: 1.15rem; align-self: flex-start; }
+/* Whatever the description runs to, every button lands on the same line.
+   The paragraph above keeps its own bottom margin, so auto never closes the
+   gap on the longest card. */
+.gift .btn { margin-top: auto; align-self: flex-start; }
 
 /* ----------------------------------------------------------------- contact */
 
@@ -442,7 +525,7 @@ img { max-width: 100%; height: auto; display: block; }
 .info dt { font-size: 0.8rem; color: var(--taupe); letter-spacing: 0.08em; margin-top: 1.35rem; }
 .info dt:first-child { margin-top: 0; }
 .info dd { margin: 0.2rem 0 0; font-size: 1.05rem; }
-.band-dark .info dt { color: var(--on-dark-2); }
+.band-dark .info dt, .on-dark .info dt { color: var(--on-dark-2); }
 
 .map { width: 100%; aspect-ratio: 4 / 3; border: 1px solid var(--gold); background: var(--cream); }
 @media (min-width: 820px) { .map { aspect-ratio: 1; } }
@@ -508,10 +591,15 @@ body { padding-bottom: 3.4rem; }
   html { scroll-behavior: auto; }
   *, *::before, *::after {
     animation-duration: 0.001ms !important; animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important; transition-delay: 0ms !important;
   }
   .reveal { opacity: 1; transform: none; }
   .hero__slide { transition: none; }
+  /* The list arrives whole: no drawn hairline, no staggered fade. */
+  .svc { opacity: 1; }
+  .svc-group__rule, .svc__leader { transform: none; }
+  /* Jumps rather than a smooth glide when an arrow is pressed. */
+  .carousel__track { scroll-behavior: auto; }
 }
 
 /* -------------------------------------------------------------- prose pages */

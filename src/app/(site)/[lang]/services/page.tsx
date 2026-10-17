@@ -55,20 +55,23 @@ export default async function ServicesPage({ params }: { params: Promise<{ lang:
       </section>
 
       {content.categories.map((c, i) => (
-        <section key={c.slug} className={i % 2 === 0 ? 'section band-cream' : 'section'}>
+        <section key={c.slug}
+          className={`section section--tight${i % 2 === 0 ? ' band-cream' : ''}`}>
           <div className="wrap">
             <Reveal>
               <Heading title={P(c)('name')}>
                 <p>{P(c)('tagline')}</p>
               </Heading>
-              <ServiceList
-                lang={lang}
-                groups={grouped(content, c.slug)}
-                waFor={(s) => whatsappLink(
-                  content.settings,
-                  waMessage.enquiry(lang, pick(s as unknown as Record<string, unknown>, 'name', lang)),
-                )}
-              />
+            </Reveal>
+            <ServiceList
+              lang={lang}
+              groups={grouped(content, c.slug)}
+              waFor={(s) => whatsappLink(
+                content.settings,
+                waMessage.enquiry(lang, pick(s as unknown as Record<string, unknown>, 'name', lang)),
+              )}
+            />
+            <Reveal>
               <p style={{ marginTop: '1.75rem' }}>
                 <Link className="btn btn--ghost" href={href(lang, `/services/${c.slug}`)}>
                   {P(c)('name')}
