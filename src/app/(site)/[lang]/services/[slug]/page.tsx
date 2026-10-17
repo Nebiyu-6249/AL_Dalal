@@ -92,17 +92,19 @@ export default async function CategoryPage(
         <div className="wrap">
           <Reveal>
             <Heading title={d.nav.services} />
-            <ServiceList
-              lang={lang}
-              groups={grouped(content, slug)}
-              waFor={(s) => whatsappLink(
-                content.settings,
-                waMessage.enquiry(
-                  lang,
-                  pick(s as unknown as Record<string, unknown>, 'name', lang),
-                ),
-              )}
-            />
+          </Reveal>
+          <ServiceList
+            lang={lang}
+            groups={grouped(content, slug)}
+            waFor={(s) => whatsappLink(
+              content.settings,
+              waMessage.enquiry(
+                lang,
+                pick(s as unknown as Record<string, unknown>, 'name', lang),
+              ),
+            )}
+          />
+          <Reveal>
             <p className="menu-note">{d.menuNote}</p>
           </Reveal>
         </div>

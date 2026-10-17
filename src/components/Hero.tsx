@@ -33,7 +33,7 @@ export default function Hero({
 
   return (
     <section
-      className="hero"
+      className="hero on-dark"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >

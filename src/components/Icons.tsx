@@ -28,6 +28,15 @@ export const TikTokIcon = ({ className }: P) => (
   </svg>
 );
 
+/* Points to the inline start. The carousel mirrors it with a transform for
+   the other direction and for Arabic, so there is only one drawing. */
+export const ChevronIcon = ({ className }: P) => (
+  <svg className={className} viewBox="0 0 24 24" aria-hidden="true" fill="none"
+    stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M14.75 4.75 7.5 12l7.25 7.25" />
+  </svg>
+);
+
 export const PinIcon = ({ className }: P) => (
   <svg className={className} viewBox="0 0 24 24" aria-hidden="true" fill="none"
     stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">

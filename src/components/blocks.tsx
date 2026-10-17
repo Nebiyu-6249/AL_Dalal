@@ -1,7 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import type { Service, Photo, Testimonial, Faq } from '@/db/schema';
+import type { CSSProperties } from 'react';
+import type { Service, Photo, Faq } from '@/db/schema';
 import { type Lang, dict, href, pick } from '@/lib/i18n';
+import Reveal from './Reveal';
 
 /* --------------------------------------------------------------- imagery */
 
@@ -60,20 +62,27 @@ export function Strip({ photos, lang }: { photos: Photo[]; lang: Lang }) {
 
 /* ---------------------------------------------------------- service lists */
 
-/** One service. The whole item is a WhatsApp link, because a figure is no
- *  longer printed beside it and asking is now the next step. The gold dot
- *  leader draws across on hover, echoing the leaders on the paper menu. */
-function ServiceItem({ s, lang, waHref }: { s: Service; lang: Lang; waHref: string }) {
+/** Items past this one all arrive together. A 23-item group must not take two
+ *  seconds to finish appearing. */
+const STAGGER_CAP = 7;
+
+/** One service. The whole item is a WhatsApp link, and the gold dot leader
+ *  runs from the end of the name to the word that replaced the price. */
+function ServiceItem({
+  s, lang, waHref, index,
+}: { s: Service; lang: Lang; waHref: string; index: number }) {
   const d = dict(lang);
   const name = pick(s as unknown as Record<string, unknown>, 'name', lang);
   const note = pick(s as unknown as Record<string, unknown>, 'note', lang);
   return (
-    <li className="svc">
+    <li className="svc" style={{ '--svc-i': Math.min(index, STAGGER_CAP) } as CSSProperties}>
       <a className="svc__link" href={waHref} target="_blank" rel="noopener noreferrer">
-        <span className="svc__leader" aria-hidden="true" />
-        <span className="svc__name">{name}</span>
+        <span className="svc__row">
+          <span className="svc__name">{name}</span>
+          <span className="svc__leader" aria-hidden="true" />
+          <span className="svc__ask">{d.ask}</span>
+        </span>
         {note && <span className="svc__note">{note}</span>}
-        <span className="svc__ask">{d.ask}</span>
       </a>
     </li>
   );
@@ -89,17 +98,21 @@ export function ServiceList({
   return (
     <div>
       {groups.map((g) => (
-        <div className="svc-group" key={g.en}>
+        /* Each group reveals itself: the hairline draws, then the items fade
+           in. The block itself does not fade, so nothing moves twice. */
+        <Reveal bare className="svc-group" key={g.en}>
           {g.en && (
-            <>
+            <div className="svc-group__head">
               <h3 className="svc-group__name">{lang === 'ar' ? g.ar || g.en : g.en}</h3>
-              <div className="svc-group__rule" />
-            </>
+              <span className="svc-group__rule" aria-hidden="true" />
+            </div>
           )}
-          <ul className="svcs">
-            {g.items.map((s) => <ServiceItem key={s.id} s={s} lang={lang} waHref={waFor(s)} />)}
+          <ul className={`svcs${g.items.length <= 3 ? ' svcs--short' : ''}`}>
+            {g.items.map((s, i) => (
+              <ServiceItem key={s.id} s={s} lang={lang} index={i} waHref={waFor(s)} />
+            ))}
           </ul>
-        </div>
+        </Reveal>
       ))}
     </div>
   );
@@ -145,33 +158,6 @@ export function Faqs({ items, lang }: { items: Faq[]; lang: Lang }) {
             <p>{pick(f as unknown as Record<string, unknown>, 'answer', lang)}</p>
           </div>
         </details>
-      ))}
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------ testimonials */
-
-export function Testimonials({ items, lang }: { items: Testimonial[]; lang: Lang }) {
-  if (!items.length) return null;
-  return (
-    <div className="quotes">
-      {items.map((q) => (
-        <figure className="quote" key={q.id} style={{ margin: 0 }}>
-          <div className="quote__stars" aria-label={`${q.rating} / 5`}>
-            <span aria-hidden="true">{'\u2605'.repeat(q.rating)}</span>
-          </div>
-          <blockquote className="quote__body" style={{ margin: 0 }}>
-            <p style={{ margin: 0 }}>
-              {pick(q as unknown as Record<string, unknown>, 'body', lang)}
-            </p>
-          </blockquote>
-          <figcaption className="quote__who">
-            {q.name}
-            {q.saidOn ? ` \u00b7 ${q.saidOn}` : ''}
-            {q.source ? ` \u00b7 ${q.source}` : ''}
-          </figcaption>
-        </figure>
       ))}
     </div>
   );
